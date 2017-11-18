@@ -17,6 +17,15 @@ func failOnError(err error, msg string) {
 }
 
 func main() {
+
+	if len(os.Args) < 2 {
+		fmt.Println("Usage: ./send 'message'")
+		os.Exit(0)
+	} else if os.Args[1] == "" {
+		fmt.Println("Usage: ./send 'message'")
+		os.Exit(0)
+	}
+
 	// The connection abstracts the socket connection, and takes care of protocol version negotiation and authentication and so on for us.
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
@@ -26,14 +35,6 @@ func main() {
 	ch, err := conn.Channel()
 	failOnError(err, "Failed to open a channel")
 	defer ch.Close()
-
-	if len(os.Args) < 2 {
-		fmt.Println("Usage: ./send 'message'")
-		os.Exit(0)
-	} else if os.Args[1] == "" {
-		fmt.Println("Usage: ./send 'message'")
-		os.Exit(0)
-	}
 
 	messageBody := os.Args[1]
 
